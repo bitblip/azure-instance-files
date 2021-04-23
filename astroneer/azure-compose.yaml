@@ -1,0 +1,40 @@
+apiVersion: '2018-10-01'
+location: eastus
+name: astroneer-server
+properties:
+  containers:
+  - name: astroneerhost
+    properties:
+      environmentVariables:
+        - name: 'AzContainerInstance'
+          value: 'true'
+        - name: 'AzTarget'
+          value: '<account>.file.core.windows.net'
+        - name: 'AzUser'
+          value: 'Azure\<account>'
+        - name: 'AzPass'
+          value: '<key>'
+        - name: 'AzShareName'
+          value: 'astroneerserverdata'
+      image: armadous/astroneer-server:latest
+      ports:
+      - protocol: UDP
+        port: 7777
+      - protocol: TCP
+        port: 5000
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 6
+  osType: Windows
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: UDP
+        port: 7777
+      - protocol: TCP
+        port: 5000
+    dnsNameLabel: astrohost
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups

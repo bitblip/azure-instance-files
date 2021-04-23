@@ -1,0 +1,62 @@
+apiVersion: '2018-10-01'
+location: eastus
+name: 7days-server
+properties:
+  containers:
+  - name: 7dayshost
+    properties:
+      environmentVariables:
+        - name: 'SEVEN_DAYS_TO_DIE_BRANCH'
+          value: 'latest_experimental'
+        - name: 'SEVEN_DAYS_TO_DIE_SERVER_STARTUP_ARGUMENTS'
+          value: '-logfile /app/.local/share/7DaysToDie/log.txt -quit -batchmode -nographics -dedicated'
+      image: didstopia/7dtd-server:latest
+      ports:
+      - protocol: UDP
+        port: 269000
+      - protocol: UDP
+        port: 26901
+      - protocol: UDP
+        port: 26902
+      - protocol: TCP
+        port: 8080
+      - protocol: TCP
+        port: 8081
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 6
+      volumeMounts:
+        - mountPath: /app/.local/share/7DaysToDie
+          name: 7daysvolume
+        - mountPath: /steamcmd/7dtd
+          name: 7daysgamevolume
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: UDP
+        port: 26900
+      - protocol: UDP
+        port: 26901
+      - protocol: UDP
+        port: 26902
+      - protocol: TCP
+        port: 8080
+      - protocol: TCP
+        port: 8081
+    dnsNameLabel: 7days2die
+  volumes:
+    - name: 7daysvolume
+      azureFile:
+        sharename: 7daysserverdata
+        storageAccountName: <account>
+        storageAccountKey: <key>
+    - name: 7daysgamevolume
+      azureFile:
+        sharename: 7daysgamefiles
+        storageAccountName: <account>
+        storageAccountKey: <key>
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups

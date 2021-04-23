@@ -1,0 +1,43 @@
+apiVersion: '2018-10-01'
+location: eastus
+name: factorio-server-17.79
+properties:
+  containers:
+  - name: factoriohost
+    properties:
+      environmentVariables:
+        - name: 'LOAD_LATEST_SAVE'
+          value: 'false'
+        - name: 'SAVE_NAME'
+          value: 'Biters'
+      image: factoriotools/factorio:latest
+      ports:
+      - protocol: UDP
+        port: 34197
+      - protocol: TCP
+        port: 27015
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 3
+      volumeMounts:
+      - mountPath: /factorio
+        name: factoriovolume
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: UDP
+        port: 34197
+      - protocol: TCP
+        port: 27015
+    dnsNameLabel: factoriohost
+  volumes:
+  - name: factoriovolume
+    azureFile:
+      sharename: factorioserverdata
+      storageAccountName: <account>
+      storageAccountKey: <key>
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
