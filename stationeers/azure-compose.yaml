@@ -1,0 +1,59 @@
+apiVersion: '2018-10-01'
+location: eastus
+name: stationeer-server
+properties:
+  containers:
+  - name: stationeerhost
+    properties:
+      environmentVariables:
+        - name: 'STATIONEERS_SERVER_STARTUP_ARGUMENTS'
+          value: '-basedirectory=/steamcmd/stationeers/saves -password lolhax -creator STEAM_0:0:4714919 -worldname MoonBase -autostart -nographics -batchmode'
+        - name: 'STATIONEERS_WORLD_NAME'
+          value: 'MoonBase'
+        - name: 'STATIONEERS_SERVER_NAME'
+          value: 'MoonBase'
+      image: didstopia/stationeers-server
+      ports:
+      - protocol: UDP
+        port: 27500
+      - protocol: UDP
+        port: 27015
+      resources:
+        requests:
+          cpu: 2.5
+          memoryInGB: 6
+      volumeMounts:
+        - mountPath: /steamcmd/stationeers/saves
+          name: stationeers
+  - name: rclone
+    properties:
+      image: armadous/rclone-aci
+      resources:
+        requests:
+          cpu: 0.5
+          memoryInGB: 1
+      volumeMounts:
+        - mountPath: /config/rclone
+          name: rcloneconfig
+        - mountPath: /files
+          name: stationeers
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: UDP
+        port: 27500
+      - protocol: UDP
+        port: 27015
+    dnsNameLabel: stationeer
+  volumes:
+    - name: stationeers
+      emptyDir: {}
+    - name: rcloneconfig
+      azureFile:
+        sharename: rclone
+        storageAccountName: <account>
+        storageAccountKey: <key>
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
