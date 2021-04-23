@@ -12,9 +12,9 @@ services:
       - "2456-2457:2456-2457/udp"
       - "9001:9001/tcp"
     environment:
-      - SERVER_NAME=VolcanoParade
-      - WORLD_NAME=Offset
-      - SERVER_PASS=secret
+      - SERVER_NAME=<label>
+      - WORLD_NAME=<world>
+      - SERVER_PASS=<password>
       - SERVER_PUBLIC=true
       - STATUS_HTTP=true
       - STATUS_HTTP_PORT=8080
